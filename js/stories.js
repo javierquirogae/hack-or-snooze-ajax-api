@@ -122,7 +122,37 @@ async function deleteStory(evt) {
 
   // re-generate story list
   await putUserStoriesOnPage();
+}  
+$ownStories.on("click", ".trash-can", deleteStory);
+
+
+
+/** Handle submitting new story form. */
+
+async function submitNewStory(evt) {
+  console.debug("submitNewStory");
+  evt.preventDefault();
+
+  // grab all info from form
+  const title = $("#create-title").val();
+  const url = $("#create-url").val();
+  const author = $("#create-author").val();
+  const username = currentUser.username
+  const storyData = {title, url, author };
+
+  const story = await storyList.addStory(currentUser, storyData);
+
+  const $story = generateStoryMarkup(story);
+  $allStoriesList.prepend($story);
+
+  // hide the form and reset it
+  $submitForm.slideUp("slow");
+  $submitForm.trigger("reset");
 }
+
+$submitForm.on("submit", submitNewStory);
+
+
 function putUserStoriesOnPage() {
   console.debug("putUserStoriesOnPage");
 
