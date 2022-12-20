@@ -8,7 +8,6 @@ let storyList;
 async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
-
   putStoriesOnPage();
 }
 
@@ -91,8 +90,6 @@ function putFavoritesListOnPage() {
   
 
 async function toggleStoryFavorite(evt) {
-  console.debug("toggleStoryFavorite");
-
   const $tgt = $(evt.target);
   const $closestLi = $tgt.closest("li");
   const storyId = $closestLi.attr("id");
@@ -103,10 +100,12 @@ async function toggleStoryFavorite(evt) {
     // currently a favorite: remove from user's fav list and change star
     await currentUser.removeFavorite(story);
     $tgt.closest("i").toggleClass("fas far");
+    console.debug("un-liked");
   } else {
     // currently not a favorite: do the opposite
     await currentUser.addFavorite(story);
     $tgt.closest("i").toggleClass("fas far");
+    console.debug("liked");
   }
 }
 

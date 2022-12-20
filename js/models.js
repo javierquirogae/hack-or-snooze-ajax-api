@@ -226,7 +226,12 @@ class User {
   }
   async addFavorite(story) {
     this.favorites.push(story);
-    await this._addOrRemoveFavorite("add", story)
+    const token = this.loginToken;
+    await axios({
+      url: `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
+      method: "POST",
+      data: { token },
+    });
   }
 
   /** Remove a story to the list of user favorites and update the API
@@ -235,25 +240,18 @@ class User {
 
   async removeFavorite(story) {
     this.favorites = this.favorites.filter(s => s.storyId !== story.storyId);
-    await this._addOrRemoveFavorite("remove", story);
-  }
-  async _addOrRemoveFavorite(newState, story) {
-    const method = newState === "add" ? "POST" : "DELETE";
     const token = this.loginToken;
     await axios({
       url: `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
-      method: method,
+      method: "DELETE",
       data: { token },
     });
   }
+
 
   /** Return true/false if given Story instance is a favorite of this user. */
 
   isFavorite(story) {
     return this.favorites.some(s => (s.storyId === story.storyId));
   }
-
-
-
-
 }
